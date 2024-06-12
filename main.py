@@ -90,13 +90,13 @@ else:
         st.session_state.page = selected
 
     if st.session_state.page == "Home":
-        import home
+        from pages import home
         home.page_home()
     elif st.session_state.page == "Prediksi":
-        import prediksi
+        from pages import prediksi
         prediksi.page_form()
     elif st.session_state.page == "Riwayat":
-        import riwayat
+        from pages import riwayat
         riwayat.page_about()
     elif st.session_state.page == "Logout":
         logoutModal()
