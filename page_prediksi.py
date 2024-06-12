@@ -66,7 +66,11 @@ def page_form():
 
         status_kelulusan = "LULUS" if prediksi[0] == 1 else "DROPOUT"
 
-        st.write("Prediksi Kelulusan:", status_kelulusan)
+        st.write("Hasil prediksi :")
+        if status_kelulusan == "LULUS":
+            st.success(status_kelulusan)
+        else:
+            st.error(status_kelulusan)
 
         # Convert to DataFrame for display
         df = pd.DataFrame({
