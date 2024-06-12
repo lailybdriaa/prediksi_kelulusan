@@ -39,7 +39,7 @@ def page_login():
 @st.experimental_dialog("Berhasil Login!")
 def loginModal(item):
     st.write(f"Selamat Datang di Website Prediksi Kelulusan Mahasiswa {item}")
-    if st.button("Next"):
+    if st.button("Ok"):
         st.session_state.page = "Home"
         st.experimental_rerun()
 
@@ -48,9 +48,10 @@ def logoutModal():
     col1, col2, col4, col3, col5 = st.columns(5)
     if col1.button("Logout"):
         st.session_state.page = "Login"
-        st.experimental_rerun()
+        st.rerun()
     if col2.button("Cancel"):
-        st.experimental_rerun()
+        st.session_state.page = "Home"
+        st.rerun()
 
 # Inisialisasi halaman
 if 'page' not in st.session_state:
