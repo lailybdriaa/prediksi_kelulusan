@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import sqlite3
-from pages import home, prediksi, riwayat
 
 # Koneksi ke database SQLite
 conn = sqlite3.connect('data/data_mahasiswa.db')
@@ -67,10 +66,13 @@ else:
         st.session_state.page = selected
         
     if st.session_state.page == "Home":
+        from pages import home
         home.page_home()
     elif st.session_state.page == "Prediksi":
+        from pages import prediksi
         prediksi.page_form()
     elif st.session_state.page == "Riwayat":
+        from pages import riwayat
         riwayat.page_about()
     elif st.session_state.page == "Logout":
         logoutModal()
