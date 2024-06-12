@@ -1,6 +1,9 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import sqlite3
+import home
+import prediksi
+import riwayat
 
 # Koneksi ke database SQLite
 conn = sqlite3.connect('data/data_mahasiswa.db')
@@ -21,30 +24,6 @@ CREATE TABLE IF NOT EXISTS admin (
 def check_credentials(username, password):
     c.execute('SELECT * FROM admin WHERE username = ? AND password = ?', (username, password))
     return c.fetchone() is not None
-
-# CSS Styling
-st.markdown("""
-<style>
-   section[data-testid="stSidebar"] div.stButton button {
-            width: 100%;
-            border-radius:0px;
-            height:75px;
-            border: 1px solid #F0F2F6;
-            background: white;
-            }
-    section[data-testid="stSidebar"] div.stButton button.active {
-        background-color: #d0d0d5;
-        border: 1px solid #c0c2c6;
-    }
-    section[data-testid="stSidebar"] div.stHeading h1{
-        padding-left: 100px;
-    }
-    .st-emotion-cache-qeahdt.eczjsme9{
-            padding: 0;
-            align: center;
-            }
-</style>
-""", unsafe_allow_html=True)
 
 # Halaman Login
 def page_login():
@@ -88,15 +67,11 @@ else:
         selected = option_menu("Main Menu", ["Home", 'Prediksi', 'Riwayat','Logout'], 
             icons=['house', 'gear','bi-clock-history', 'bi-box-arrow-right'], menu_icon="cast", default_index=0)
         st.session_state.page = selected
-
     if st.session_state.page == "Home":
-        from pages import home
         home.page_home()
     elif st.session_state.page == "Prediksi":
-        from pages import prediksi
         prediksi.page_form()
     elif st.session_state.page == "Riwayat":
-        from pages import riwayat
         riwayat.page_about()
     elif st.session_state.page == "Logout":
         logoutModal()
