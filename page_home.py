@@ -38,5 +38,5 @@ def page_home():
 
     st.markdown('<p class="header-text">Selamat datang di Aplikasi Prediksi Kelulusan Mahasiswa</p>', unsafe_allow_html=True)
     st.markdown('<p class="subheader-text">Universitas Darma Persada</p>', unsafe_allow_html=True)
-    st.image("../Logo_Unsada.png", caption="Logo Universitas Darma Persada", use_column_width=True)
+    st.image("Logo Unsada.png", caption="Logo Universitas Darma Persada", use_column_width=True)
     st.markdown('<p class="footer-text">© 2024 Universitas Darma Persada. All rights reserved.</p>', unsafe_allow_html=True)
