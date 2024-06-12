@@ -1,9 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import sqlite3
-import home
-import prediksi
-import riwayat
+from pages import home, prediksi, riwayat
 
 # Koneksi ke database SQLite
 conn = sqlite3.connect('data/data_mahasiswa.db')
@@ -67,6 +65,7 @@ else:
         selected = option_menu("Main Menu", ["Home", 'Prediksi', 'Riwayat','Logout'], 
             icons=['house', 'gear','bi-clock-history', 'bi-box-arrow-right'], menu_icon="cast", default_index=0)
         st.session_state.page = selected
+        
     if st.session_state.page == "Home":
         home.page_home()
     elif st.session_state.page == "Prediksi":
