@@ -14,7 +14,7 @@ conn = sqlite3.connect('data/data_mahasiswa.db', check_same_thread=False)
 c = conn.cursor()
 
 def page_form():
-    st.header("Prediksi Kelulusan")
+    st.header("Prediksi Kelulusan Mahasiswa")
         
     with st.form("student_form"):
         # Input fields
