@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 import sqlite3
 import joblib
+import main_sec
 
 # Load model dan scaler
 best_model = joblib.load('models/best_model.pkl')
