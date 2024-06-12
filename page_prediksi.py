@@ -64,9 +64,9 @@ def page_form():
 
         prediksi = best_model.predict(data_baru_pca)
 
-        st.write("Prediksi Kelulusan:", prediksi[0])
-
         status_kelulusan = "LULUS" if prediksi[0] == 1 else "DROPOUT"
+
+        st.write("Prediksi Kelulusan:", status_kelulusan)
 
         # Convert to DataFrame for display
         df = pd.DataFrame({
