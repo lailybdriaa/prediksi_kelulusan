@@ -1,6 +1,5 @@
 streamlit
 streamlit-option-menu
 pandas
-sqlite3
 joblib
 scikit-learn
