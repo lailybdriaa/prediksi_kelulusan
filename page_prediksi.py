@@ -94,13 +94,12 @@ def page_form():
         st.write("Tabel Data Mahasiswa:")
         st.dataframe(df)
         # Masukkan data ke dalam tabel
-        with conn_lock:
-            c.execute('''
-            INSERT INTO mahasiswa (nama, nim, ips_semester_1, ips_semester_2, ips_semester_3, ips_semester_4,
-                                   tagihan_semester_1, tagihan_semester_2, tagihan_semester_3, tagihan_semester_4, kehadiran, kelulusan, tanggal)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (nama, nim, ips_semesters[0], ips_semesters[1], ips_semesters[2], ips_semesters[3],
-                  tagihan_semesters[0], tagihan_semesters[1], tagihan_semesters[2], tagihan_semesters[3], kehadiran, status_kelulusan, date))
-            
-            conn.commit()
-            st.success("Data berhasil disimpan ke dalam database!")
+        c.execute('''
+        INSERT INTO mahasiswa (nama, nim, ips_semester_1, ips_semester_2, ips_semester_3, ips_semester_4,
+                                tagihan_semester_1, tagihan_semester_2, tagihan_semester_3, tagihan_semester_4, kehadiran, kelulusan, tanggal)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (nama, nim, ips_semesters[0], ips_semesters[1], ips_semesters[2], ips_semesters[3],
+                tagihan_semesters[0], tagihan_semesters[1], tagihan_semesters[2], tagihan_semesters[3], kehadiran, status_kelulusan, date))
+        
+        conn.commit()
+        st.success("Data berhasil disimpan ke dalam database!")
