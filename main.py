@@ -5,12 +5,12 @@ import sqlite3
 import joblib
 
 # Load model dan scaler
-best_model = joblib.load('best_model.pkl')
-scaler = joblib.load('scaler.pkl')
-pca = joblib.load('pca.pkl')
+best_model = joblib.load('models/best_model.pkl')
+scaler = joblib.load('models/scaler.pkl')
+pca = joblib.load('models/pca.pkl')
 
 # Koneksi ke database SQLite
-conn = sqlite3.connect('data_mahasiswa.db')
+conn = sqlite3.connect('data/data_mahasiswa.db')
 c = conn.cursor()
 
 # Membuat tabel admin jika belum ada
