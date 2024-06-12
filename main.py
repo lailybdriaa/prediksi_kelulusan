@@ -66,14 +66,14 @@ else:
         st.session_state.page = selected
         
     if st.session_state.page == "Home":
-        import home
-        home.page_home()
+        import page_home
+        page_home.page_home()
     elif st.session_state.page == "Prediksi":
-        import prediksi
-        prediksi.page_form()
+        import page_prediksi
+        page_prediksi.page_form()
     elif st.session_state.page == "Riwayat":
-        import riwayat
-        riwayat.page_about()
+        import page_riwayat
+        page_riwayat.page_about()
     elif st.session_state.page == "Logout":
         logoutModal()
 
