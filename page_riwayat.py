@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-import threading
 
 # Koneksi ke database SQLite
 conn = sqlite3.connect('data/data_mahasiswa.db')
 c = conn.cursor()
-conn_lock = threading.Lock()
 
 def page_about():   
     st.header("Data Riwayat Mahasiswa")

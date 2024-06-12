@@ -3,7 +3,6 @@ import pandas as pd
 import joblib
 import sqlite3
 from datetime import datetime
-import threading
 
 # Load model dan scaler
 best_model = joblib.load('models/best_model.pkl')
@@ -13,7 +12,6 @@ pca = joblib.load('models/pca.pkl')
 # Koneksi ke database SQLite
 conn = sqlite3.connect('data/data_mahasiswa.db', check_same_thread=False)
 c = conn.cursor()
-conn_lock = threading.Lock()
 
 def page_form():
     st.header("Prediksi Kelulusan")
