@@ -2,7 +2,6 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import sqlite3
 
-st.button("Button TES")
 # Koneksi ke database SQLite
 def get_db_connection(): #function deff dengan mengkoneksikan ke database db mahasiswa
     conn = sqlite3.connect('data/data_mahasiswa.db')#variabel conn atau connection untuk mengkoneksikan/menghubungkan ke sqlite dari folder data yang isinya file data_mahasiswa
