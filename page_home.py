@@ -79,8 +79,7 @@ def page_home():
     st.markdown('<center> <img width="30%" src="https://i.imgur.com/3eTKJe2.png"> </center>', unsafe_allow_html=True)
     
     st.divider()  # Menambahkan garis pemisah warna abu2
-    st.write ("Laily Badria")
-    st.button("Button prediksi")
+    
 
     # Mengambil dan menampilkan data kelulusan
     df = get_graduation_data()  # Mengambil data kelulusan dari database
