@@ -33,6 +33,7 @@ def page_form():
         for i in range(1, 5):  # Looping untuk input tagihan setiap semester
             tagihan = col2.number_input(f"Tagihan Semester {i}", min_value=0, step=5000000)  # Input tagihan
             tagihan_semesters.append(tagihan)  # Menyimpan tagihan ke dalam list
+            
 
         # Tombol submit
         submit_button = st.form_submit_button(label="Submit")  # Tombol untuk submit form
