@@ -22,6 +22,7 @@ def page_form():
         nama = col0.text_input("Nama")  # Input untuk nama mahasiswa
         nim = col0.text_input("NIM")  # Input untuk NIM mahasiswa
         kehadiran = col0.number_input("Kehadiran (%)", min_value=0, max_value=100, step=5)  # Input untuk persentase kehadiran dengan selisih selisih 5 angka
+        tanggal = col0.date_input("Tanggal")
 
         st.markdown("---")  # Menampilkan garis pemisah
         ips_semesters = []
