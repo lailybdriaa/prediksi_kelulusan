@@ -1,6 +1,6 @@
 streamlit
 streamlit-option-menu
-pandas
+pandas == 2.1.4
 joblib
 scikit-learn
 plotly
