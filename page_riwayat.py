@@ -67,6 +67,13 @@ def dataframe_to_pdf(df, image_path):
     pdf.add_table(df)
     return pdf.output(dest='S').encode('latin1')  # Mengembalikan data PDF dalam bentuk byte
 
+# Fungsi untuk mengubah kolom tagihan
+def convert_tagihan_columns(df):
+    tagihan_columns = ['Tagihan 1', 'Tagihan 2', 'Tagihan 3', 'Tagihan 4']
+    for col in tagihan_columns:
+        df[col] = df[col].apply(lambda x: 1 if x != 0 else 0)
+    return df
+
 # Fungsi untuk halaman tentang data mahasiswa
 def page_about():
     st.header("Data Riwayat Mahasiswa")  # Menampilkan header halaman
@@ -81,6 +88,9 @@ def page_about():
                                                  'Tagihan 3', 'Tagihan 4', 'Kehadiran (%)', 'Hasil'])  # Membuat DataFrame dari hasil query
         df_history = df_history.drop(columns=['ID'])  # Menghapus kolom ID dari DataFrame karna sudah ada nomor di website
 
+        # Mengonversi kolom tagihan menjadi 1 atau 0
+        df_history = convert_tagihan_columns(df_history)
+
         df_history_pdf = pd.DataFrame(rows, columns=['ID', 'Tanggal', 'Nama', 'NIM', 'IPS 1', 'IPS 2', 'IPS 3',
                                                      'IPS 4', 'Tagihan 1', 'Tagihan 2',
                                                      'Tagihan 3', 'Tagihan 4', 'Kehadiran (%)', 'Hasil'])  # Membuat DataFrame lain untuk PDF
@@ -88,12 +98,15 @@ def page_about():
 
         df_history_pdf = df_history_pdf.rename(columns={'Kehadiran (%)': 'Kehadiran'})  # Mengubah nama kolom Kehadiran (%) menjadi kehadiran saja 
 
+        # Mengonversi kolom tagihan menjadi 1 atau 0 untuk PDF
+        df_history_pdf = convert_tagihan_columns(df_history_pdf)
+
         # Mengonversi DataFrame ke format Excel
         excel_data = to_excel(df_history)
 
         # Mengonversi DataFrame ke format PDF
-        image_path = 'kopUnsada.png'  # kop surat gambar yang ingin ditampilkan di PDF 
-        pdf_data = dataframe_to_pdf(df_history_pdf, image_path)#donwload data jadi pdf
+        image_path = 'KopUnsada.png'  # kop surat gambar yang ingin ditampilkan di PDF 
+        pdf_data = dataframe_to_pdf(df_history_pdf, image_path)  #donwload data jadi pdf
 
         # Mendapatkan tanggal hari ini
         today = datetime.now().strftime("%Y-%m-%d")
@@ -107,3 +120,6 @@ def page_about():
         st.dataframe(df_history)  # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh
     else:
         st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
+
+# Menjalankan fungsi halaman tentang
+page_about()

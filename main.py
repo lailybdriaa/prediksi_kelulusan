@@ -41,7 +41,7 @@ def page_login(): #fuction def login yang digunakan untuk menampilkan antarmuka 
 
 @st.experimental_dialog("Berhasil Login!")
 def loginModal(item):
-    st.write(f"Selamat Datang di Website Prediksi Kelulusan Mahasiswa {item}")
+    st.write(f"Selamat Datang {item} di Website Prediksi Kelulusan Mahasiswa")
     if st.button("Ok"):
         st.session_state.page = "Home"
         st.rerun()
