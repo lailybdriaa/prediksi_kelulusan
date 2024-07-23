@@ -38,10 +38,10 @@ class PDF(FPDF):
         self.set_font('Arial', 'I', 8)
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
-    def add_image(self, image):
+    def add_image(self, image_path):
         # Menambahkan gambar ke PDF
         try:
-            self.image(image, 10, 8, 190)
+            self.image(image_path, 10, 8, 190)
             self.ln(65)  # Menyesuaikan nilai ini berdasarkan tinggi gambar
         except Exception as e:
             st.error(f"Error adding image to PDF: {e}")
@@ -67,10 +67,10 @@ class PDF(FPDF):
             self.ln(row_height)
 
 # Fungsi untuk mengubah DataFrame ke format PDF
-def dataframe_to_pdf(df, image):
+def dataframe_to_pdf(df, image_path):
     pdf = PDF()
     pdf.add_page()
-    pdf.add_image(image)
+    pdf.add_image(image_path)
     pdf.add_table(df)
     return pdf.output(dest='S').encode('latin1')  # Mengembalikan data PDF dalam bentuk byte
 
@@ -117,26 +117,20 @@ def page_about():
             # Mengonversi DataFrame ke format Excel
             excel_data = to_excel(df_history)
 
-            # Upload gambar
-            image_file = st.file_uploader("Upload Kop Surat", type=["png", "jpg", "jpeg"])
+            # Mengonversi DataFrame ke format PDF
+            image_path = 'KopUnsada.png'  # Path gambar untuk kop surat
+            pdf_data = dataframe_to_pdf(df_history_pdf, image_path)  # Download data jadi pdf
 
-            # Konversi DataFrame ke format PDF dengan gambar
-            if image_file is not None:
-                image = Image.open(image_file)
-                pdf_data = dataframe_to_pdf(df_history_pdf, image)
+            # Mendapatkan tanggal hari ini
+            today = datetime.now().strftime("%Y-%m-%d")
 
-                # Mendapatkan tanggal hari ini
-                today = datetime.now().strftime("%Y-%m-%d")
+            # Tombol untuk mengunduh file Excel dengan menambahkan tanggal unduhnya 
+            st.download_button(label='Download Excel', data=excel_data, file_name=f'data_mahasiswa {today}.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', key='excel_download_button')
 
-                # Tombol untuk mengunduh file Excel dengan menambahkan tanggal unduhnya 
-                st.download_button(label='Download Excel', data=excel_data, file_name=f'data_mahasiswa {today}.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', key='excel_download_button')
+            # Tombol untuk mengunduh file PDF dengan menambahkan tanggal unduhnya 
+            st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
 
-                # Tombol untuk mengunduh file PDF dengan menambahkan tanggal unduhnya 
-                st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
-
-                st.dataframe(df_history)  # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh
-            else:
-                st.warning("Silakan upload gambar untuk kop surat.")
+            st.dataframe(df_history)  # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh
         else:
             st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
     else:
