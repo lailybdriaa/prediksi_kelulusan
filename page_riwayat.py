@@ -8,19 +8,23 @@ from datetime import datetime  # Memanggil modul datetime untuk mendapatkan wakt
 
 # Fungsi untuk koneksi ke database SQLite
 def get_db_connection():
-    conn = sqlite3.connect('data/data_mahasiswa.db')  # Membuka koneksi ke database SQLite
-    return conn
+    try:
+        conn = sqlite3.connect('data/data_mahasiswa.db')  # Membuka koneksi ke database SQLite
+        return conn
+    except Exception as e:
+        st.error(f"Error connecting to database: {e}")
+        return None
 
 # Fungsi untuk mengubah dataframe ke format Excel
 def to_excel(df):
-    output = BytesIO()  # Membuat data dalam bentuk excel lalu diolah otomatis agar bisa didwnld tanpa harus membuat file dikomputer 
+    output = BytesIO()  # Membuat data dalam bentuk excel lalu diolah otomatis agar bisa didownload tanpa harus membuat file di komputer 
     writer = pd.ExcelWriter(output, engine='openpyxl')  # Membuat writer untuk menulis data ke format Excel
     df.to_excel(writer, index=False, sheet_name='Sheet1')  # Menulis data ke dalam sheet Excel
     writer.close()  # Menutup writer
     processed_data = output.getvalue()  # Mengambil data dari objek BytesIO
     return processed_data  # Mengembalikan data dalam bentuk byte
 
-# Fungsi untuk mengubah dataframe ke format PDF atau mendnld data prediksi menjadi pdf
+# Fungsi untuk mengubah dataframe ke format PDF atau mendownload data prediksi menjadi pdf
 class PDF(FPDF):
     def header(self):
         # Menambahkan header ke PDF
@@ -36,8 +40,11 @@ class PDF(FPDF):
 
     def add_image(self, image_path):
         # Menambahkan gambar ke PDF
-        self.image(image_path, 10, 8, 190)
-        self.ln(65)  # Menyesuaikan nilai ini berdasarkan tinggi gambar
+        try:
+            self.image(image_path, 10, 8, 190)
+            self.ln(65)  # Menyesuaikan nilai ini berdasarkan tinggi gambar
+        except Exception as e:
+            st.error(f"Error adding image to PDF: {e}")
 
     def add_table(self, df):
         # Menambahkan tabel ke PDF
@@ -78,48 +85,56 @@ def convert_tagihan_columns(df):
 def page_about():
     st.header("Data Riwayat Mahasiswa")  # Menampilkan header halaman
     conn = get_db_connection()  # Membuka koneksi ke database
-    c = conn.cursor()  # Membuat cursor untuk eksekusi query SQL
-    c.execute('''SELECT * FROM mahasiswa''')  # Mengeksekusi query untuk mengambil semua data dari tabel mahasiswa
-    rows = c.fetchall()  # Mengambil semua baris hasil query
-    conn.close()  # Menutup koneksi ke database
-    if len(rows) > 0:
-        df_history = pd.DataFrame(rows, columns=['ID', 'Tanggal', 'Nama', 'NIM', 'IPS 1', 'IPS 2', 'IPS 3',
-                                                 'IPS 4', 'Tagihan 1', 'Tagihan 2',
-                                                 'Tagihan 3', 'Tagihan 4', 'Kehadiran (%)', 'Hasil'])  # Membuat DataFrame dari hasil query
-        df_history = df_history.drop(columns=['ID'])  # Menghapus kolom ID dari DataFrame karna sudah ada nomor di website
-
-        # Mengonversi kolom tagihan menjadi 1 atau 0
-        df_history = convert_tagihan_columns(df_history)
-
-        df_history_pdf = pd.DataFrame(rows, columns=['ID', 'Tanggal', 'Nama', 'NIM', 'IPS 1', 'IPS 2', 'IPS 3',
+    if conn:
+        c = conn.cursor()  # Membuat cursor untuk eksekusi query SQL
+        try:
+            c.execute('''SELECT * FROM mahasiswa''')  # Mengeksekusi query untuk mengambil semua data dari tabel mahasiswa
+            rows = c.fetchall()  # Mengambil semua baris hasil query
+            conn.close()  # Menutup koneksi ke database
+        except Exception as e:
+            st.error(f"Error fetching data from database: {e}")
+            rows = []
+        
+        if len(rows) > 0:
+            df_history = pd.DataFrame(rows, columns=['ID', 'Tanggal', 'Nama', 'NIM', 'IPS 1', 'IPS 2', 'IPS 3',
                                                      'IPS 4', 'Tagihan 1', 'Tagihan 2',
-                                                     'Tagihan 3', 'Tagihan 4', 'Kehadiran (%)', 'Hasil'])  # Membuat DataFrame lain untuk PDF
-        df_history_pdf = df_history_pdf.drop(columns=['ID', 'Tanggal', 'NIM'])  # Menghapus kolom yang tidak diperlukan untuk PDF seperti id, tgl, nim di pdf yang di dwnld
+                                                     'Tagihan 3', 'Tagihan 4', 'Kehadiran (%)', 'Hasil'])  # Membuat DataFrame dari hasil query
+            df_history = df_history.drop(columns=['ID'])  # Menghapus kolom ID dari DataFrame karna sudah ada nomor di website
 
-        df_history_pdf = df_history_pdf.rename(columns={'Kehadiran (%)': 'Kehadiran'})  # Mengubah nama kolom Kehadiran (%) menjadi kehadiran saja 
+            # Mengonversi kolom tagihan menjadi 1 atau 0
+            df_history = convert_tagihan_columns(df_history)
 
-        # Mengonversi kolom tagihan menjadi 1 atau 0 untuk PDF
-        df_history_pdf = convert_tagihan_columns(df_history_pdf)
+            df_history_pdf = pd.DataFrame(rows, columns=['ID', 'Tanggal', 'Nama', 'NIM', 'IPS 1', 'IPS 2', 'IPS 3',
+                                                         'IPS 4', 'Tagihan 1', 'Tagihan 2',
+                                                         'Tagihan 3', 'Tagihan 4', 'Kehadiran (%)', 'Hasil'])  # Membuat DataFrame lain untuk PDF
+            df_history_pdf = df_history_pdf.drop(columns=['ID', 'Tanggal', 'NIM'])  # Menghapus kolom yang tidak diperlukan untuk PDF seperti id, tgl, nim di pdf yang di dwnld
 
-        # Mengonversi DataFrame ke format Excel
-        excel_data = to_excel(df_history)
+            df_history_pdf = df_history_pdf.rename(columns={'Kehadiran (%)': 'Kehadiran'})  # Mengubah nama kolom Kehadiran (%) menjadi kehadiran saja 
 
-        # Mengonversi DataFrame ke format PDF
-        image_path = 'kopUnsada.png'  # kop surat gambar yang ingin ditampilkan di PDF 
-        pdf_data = dataframe_to_pdf(df_history_pdf, image_path)  #donwload data jadi pdf
+            # Mengonversi kolom tagihan menjadi 1 atau 0 untuk PDF
+            df_history_pdf = convert_tagihan_columns(df_history_pdf)
 
-        # Mendapatkan tanggal hari ini
-        today = datetime.now().strftime("%Y-%m-%d")
+            # Mengonversi DataFrame ke format Excel
+            excel_data = to_excel(df_history)
 
-        # Tombol untuk mengunduh file Excel dengan menambahkan tanggal unduhnya 
-        st.download_button(label='Download Excel', data=excel_data, file_name=f'data_mahasiswa {today}.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', key='excel_download_button')
+            # Mengonversi DataFrame ke format PDF
+            image_path = '/mnt/data/image.png'  # Path gambar untuk kop surat
+            pdf_data = dataframe_to_pdf(df_history_pdf, image_path)  # Download data jadi pdf
 
-        # Tombol untuk mengunduh file PDF dengan menambahkan tanggal unduhnya 
-        st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
+            # Mendapatkan tanggal hari ini
+            today = datetime.now().strftime("%Y-%m-%d")
 
-        st.dataframe(df_history)  # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh
+            # Tombol untuk mengunduh file Excel dengan menambahkan tanggal unduhnya 
+            st.download_button(label='Download Excel', data=excel_data, file_name=f'data_mahasiswa {today}.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', key='excel_download_button')
+
+            # Tombol untuk mengunduh file PDF dengan menambahkan tanggal unduhnya 
+            st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
+
+            st.dataframe(df_history)  # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh
+        else:
+            st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
     else:
-        st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
+        st.write("Gagal terhubung ke database.")  # Menampilkan pesan jika tidak terhubung ke database
 
 # Menjalankan fungsi halaman tentang
 page_about()
