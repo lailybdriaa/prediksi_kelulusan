@@ -20,6 +20,11 @@ def page_excel():
     if uploaded_file:
         df = pd.read_excel(uploaded_file)
 
+        # Periksa apakah kolom 'NIM' ada dalam DataFrame
+        if 'NIM' not in df.columns:
+            st.error("Kolom 'NIM' tidak ditemukan di file Excel.")
+            return
+
         # Ubah tipe data kolom NIM menjadi string
         df['NIM'] = df['NIM'].astype(str)
 
