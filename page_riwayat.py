@@ -74,6 +74,13 @@ def convert_tagihan_columns(df):
         df[col] = df[col].apply(lambda x: 1 if x != 0 else 0)
     return df
 
+# Fungsi untuk memberikan highlight pada baris yang drop out
+def highlight_dropout(row):
+    if row['Hasil'] == 'Drop Out':
+        return ['background-color: red']*len(row)
+    else:
+        return ['']*len(row)
+
 # Fungsi untuk halaman tentang data mahasiswa
 def page_about():
     st.header("Data Riwayat Mahasiswa")  # Menampilkan header halaman
@@ -117,15 +124,8 @@ def page_about():
         # Tombol untuk mengunduh file PDF dengan menambahkan tanggal unduhnya 
         st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
 
-        # Menambahkan kolom baru untuk tanda drop out
-        df_history['Status'] = df_history['Hasil'].apply(lambda x: 'Drop Out' if x == 'Drop Out' else 'Aktif')
-
-        # Menambahkan gaya untuk warna/warning drop out
-        def highlight_drop_out(row):
-            return ['background-color: red' if row['Status'] == 'Drop Out' else '' for _ in row]
-
-        # Menampilkan DataFrame dengan style
-        st.dataframe(df_history.style.apply(highlight_drop_out, axis=1))
+        # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh dengan highlight untuk mahasiswa yang drop out
+        st.dataframe(df_history.style.apply(highlight_dropout, axis=1))
     else:
         st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
 
