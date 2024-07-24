@@ -112,7 +112,7 @@ def page_about():
         excel_data = to_excel(df_history)
 
         # Mengonversi DataFrame ke format PDF
-        image_path = 'KopUnsada.png'  # Path gambar kop surat yang ingin ditampilkan di PDF
+        image_path = '/mnt/data/image.png'  # Path gambar kop surat yang ingin ditampilkan di PDF
         pdf_data = dataframe_to_pdf(df_history_pdf, image_path)  # Download data jadi PDF
 
         # Mendapatkan tanggal hari ini
