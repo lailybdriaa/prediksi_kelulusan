@@ -75,11 +75,11 @@ def convert_tagihan_columns(df):
     return df
 
 # Fungsi untuk memberikan warna merah pada baris "Drop Out"
-def highlight_drop_out(row):
-    if row['Hasil'] == 'Drop Out':
-        return ['background-color: red'] * len(row)
+def highlight_drop_out(s):
+    if s['Hasil'] == 'Drop Out':
+        return ['background-color: red'] * len(s)
     else:
-        return [''] * len(row)
+        return [''] * len(s)
 
 # Fungsi untuk halaman tentang data mahasiswa
 def page_about():
@@ -124,9 +124,9 @@ def page_about():
         # Tombol untuk mengunduh file PDF dengan menambahkan tanggal unduhnya 
         st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
 
-        # Membuat tabel HTML dengan pewarnaan khusus untuk baris "Drop Out"
-        html_table = df_history.style.apply(highlight_drop_out, axis=1).render()
-        st.markdown(html_table, unsafe_allow_html=True)  # Menampilkan tabel HTML di Streamlit
+        # Menerapkan highlight pada DataFrame
+        styled_df = df_history.style.apply(highlight_drop_out, axis=1)
+        st.write(styled_df)  # Menampilkan DataFrame dengan highlight di Streamlit
     else:
         st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
 
