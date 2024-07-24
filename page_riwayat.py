@@ -76,7 +76,7 @@ def convert_tagihan_columns(df):
 
 # Fungsi untuk memberikan highlight pada baris yang drop out
 def highlight_dropout(row):
-    if row['Hasil'] == 'Drop Out':
+    if row['Hasil'] == 'DROPOUT':
         return ['background-color: red']*len(row)
     else:
         return ['']*len(row)
@@ -112,7 +112,7 @@ def page_about():
         excel_data = to_excel(df_history)
 
         # Mengonversi DataFrame ke format PDF
-        image_path = 'kopUnsada.png'  # Kop surat gambar yang ingin ditampilkan di PDF 
+        image_path = 'KopUnsada.png'  # Path gambar kop surat yang ingin ditampilkan di PDF
         pdf_data = dataframe_to_pdf(df_history_pdf, image_path)  # Download data jadi PDF
 
         # Mendapatkan tanggal hari ini
@@ -126,6 +126,15 @@ def page_about():
 
         # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh dengan highlight untuk mahasiswa yang drop out
         st.dataframe(df_history.style.apply(highlight_dropout, axis=1))
+
+        # Menampilkan list mahasiswa yang drop out dengan warna merah
+        st.markdown("<h2>List Mahasiswa Drop Out</h2>", unsafe_allow_html=True)
+        drop_out_students = df_history[df_history['Hasil'] == 'DROPOUT']
+        if not drop_out_students.empty:
+            for index, row in drop_out_students.iterrows():
+                st.markdown(f"<p style='color:red;'>{row['Nama']} ({row['NIM']})</p>", unsafe_allow_html=True)
+        else:
+            st.write("Tidak ada mahasiswa yang drop out.")
     else:
         st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
 
