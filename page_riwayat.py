@@ -125,7 +125,8 @@ def page_about():
         st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
 
         # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh dengan highlight untuk mahasiswa yang drop out
-        st.dataframe(df_history.style.apply(highlight_dropout, axis=1))
+        styled_df = df_history.style.apply(highlight_dropout, axis=1)
+        st.dataframe(styled_df)
     else:
         st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
 
