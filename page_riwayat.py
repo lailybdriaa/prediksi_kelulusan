@@ -76,10 +76,7 @@ def convert_tagihan_columns(df):
 
 # Fungsi untuk memberikan highlight pada baris yang drop out
 def highlight_dropout(row):
-    if row['Hasil'] == 'Drop Out':
-        return ['background-color: red']*len(row)
-    else:
-        return ['']*len(row)
+    return ['background-color: red' if row['Hasil'] == 'Drop Out' else '' for _ in row]
 
 # Fungsi untuk halaman tentang data mahasiswa
 def page_about():
