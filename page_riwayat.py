@@ -79,6 +79,14 @@ def highlight_dropout(row):
     return ['background-color: red' if row['Hasil'] == 'Drop Out' else '' for _ in row]
 
 # Fungsi untuk halaman tentang data mahasiswa
+
+def highlight_dropout(row):
+    # Check if 'Hasil' column has the value 'DROPOUT'
+    if row['Hasil'] == 'DROPOUT':
+        return ['background-color: #f8d7da'] * len(row)
+    else:
+        return ['background-color: #d4edda'] * len(row)
+
 def page_about():
     st.header("Data Riwayat Mahasiswa")  # Menampilkan header halaman
     conn = get_db_connection()  # Membuka koneksi ke database
@@ -92,8 +100,7 @@ def page_about():
                                                  'Tagihan 3', 'Tagihan 4', 'Kehadiran (%)', 'Hasil'])  # Membuat DataFrame dari hasil query
         df_history = df_history.drop(columns=['ID'])  # Menghapus kolom ID dari DataFrame karena sudah ada nomor di website
 
-        # Mengonversi kolom tagihan menjadi 1 atau 0
-        df_history = convert_tagihan_columns(df_history)
+        data_placeholder = st.empty()
 
         df_history_pdf = pd.DataFrame(rows, columns=['ID', 'Tanggal', 'Nama', 'NIM', 'IPS 1', 'IPS 2', 'IPS 3',
                                                      'IPS 4', 'Tagihan 1', 'Tagihan 2',
@@ -122,8 +129,11 @@ def page_about():
         st.download_button(label='Download PDF', data=pdf_data, file_name=f'Prediksi Kelulusan {today}.pdf', mime='application/pdf', key='pdf_download_button')
 
         # Menampilkan DataFrame sebagai tabel di dalam file yang sudah diunduh dengan highlight untuk mahasiswa yang drop out
+       
         styled_df = df_history.style.apply(highlight_dropout, axis=1)
-        st.dataframe(styled_df)
+        
+        data_placeholder.dataframe(styled_df)
+
     else:
         st.write("Belum ada data yang tersimpan.")  # Menampilkan pesan jika tidak ada data yang tersimpan atau diprediksi
 
